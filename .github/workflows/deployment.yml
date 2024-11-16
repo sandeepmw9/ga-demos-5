@@ -10,8 +10,8 @@ jobs:
   test:
     env: #defining env variables on job level
       MONGODB_CLUSTER_ADDRESS: ga-demos.wsvjx.mongodb.net
-      MONGODB_USERNAME: sandeepmishrawork
-      MONGODB_PASSWORD: Acj23lLSzIbiLOK3
+      MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }} #updated the id/password using secrets context
+      MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
       PORT: 8080
     runs-on: ubuntu-latest
     steps:
@@ -37,6 +37,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: output info
-        run: |
-          echo "MONGODB_USERNAME: ${{ env.MONGODB_USERNAME }}"
+        run: | #here as we can see the MONGODB_USERNAME is defined on job level and hence its not accessible in this deploy job, resulting the error
+          echo "MONGODB_USERNAME: ${{ env.MONGODB_USERNAME }}" 
           echo "MONGODB_DB_NAME: $MONGODB_DB_NAME"
