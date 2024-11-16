@@ -4,11 +4,11 @@ on:
     branches:
       - master
       - dev
-env:
+env: #defining env variables on workflow level
   MONGODB_DB_NAME: ga-demos
 jobs:
   test:
-    env:
+    env: #defining env variables on job level
       MONGODB_CLUSTER_ADDRESS: ga-demos.wsvjx.mongodb.net
       MONGODB_USERNAME: sandeepmishrawork
       MONGODB_PASSWORD: Acj23lLSzIbiLOK3
@@ -25,12 +25,12 @@ jobs:
       - name: install dependencies
         run: npm ci
       - name: run server
-        run: npm start & npx wait-on http://127.0.0.1:$PORT
+        run: npm start & npx wait-on http://127.0.0.1:$PORT #here $PORT gives the access to env variables using shell method
       - name: run tests
         run: npm run test
       - name: output info
-        run: |
-          echo "MONGODB_USERNAME: ${{ env.MONGODB_USERNAME }} "
+        run: | # using the env variables with help of env context
+          echo "MONGODB_USERNAME: ${{ env.MONGODB_USERNAME }}"
           
   deploy:
     needs: test
@@ -38,5 +38,5 @@ jobs:
     steps:
       - name: output info
         run: |
-          echo "MONGODB_USERNAME: {{ env.MONGODB_USERNAME }}"
+          echo "MONGODB_USERNAME: ${{ env.MONGODB_USERNAME }}"
           echo "MONGODB_DB_NAME: $MONGODB_DB_NAME"
