@@ -1,0 +1,41 @@
+name: deployment
+on:
+  push:
+    branches:
+      - master
+      - dev
+env:
+  MONGODB_DB_NAME: ga-demos
+jobs:
+  test:
+    env:
+      MONGODB_CLUSTER_ADDRESS: ga-demos.wsvjx.mongodb.net
+      MONGODB_USERNAME: sandeepmishrawork
+      MONGODB_PASSWORD: Acj23lLSzIbiLOK3
+      PORT: 8080
+    runs-on: ubuntu-latest
+    steps:
+      - name: get code
+        uses: actions/checkout@v4
+      - name: cache dependencies
+        uses: actions/caching@v4
+        with:
+          path: ~/.npm
+          key: npm-dependencies-${{ hashFiles('**/package-lock.json')}}
+      - name: install dependencies
+        run: npm ci
+      - name: run server
+        run: npm start & npx wait-on http://127.0.0.1:$PORT
+      - name: run tests
+        run: npm run test
+      - name: output info
+        run: |
+          echo "MONGODB_USERNAME: ${{ env.MONGODB_USERNAME }}"
+          
+  deploy:
+    runs-on: ubuntu-lastes
+    steps:
+      - name: output info
+        run: |
+          echo "MONGODB_USERNAME: {{ env.MONGODB_USERNAME }}"
+          echo "MONGODB_DB_NAME: $MONGODB_DB_NAME"
